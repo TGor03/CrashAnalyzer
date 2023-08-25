@@ -1,0 +1,24 @@
+<head>
+    <!--Generate a head and title and include global.css and upload.js-->
+    <title>CompSys Crash Dump Analyzer</title>
+    <link rel="stylesheet" type="text/css" href="global.css">
+</head>
+<body>
+    <!--Generate our nav bar-->
+    <div id="navbar">
+        <div id="navtitle">CompSys Crash Dump Analyzer</div>
+    </div>
+    <!--Generate our input box-->
+    <div id="filebox">
+        <div id="fileplus" class="button" for="fileElem"></div>
+        <form class="my-form">
+            <input type="file" id="fileElem" multiple accept=".dmp" onchange="handleFiles(this.files)">
+        </form>
+        <progress id="progress-bar" max=100 value=0></progress>
+    </div>
+    <!--Generate our output box-->
+    <div id="outputbox">
+        <p id="output"></p>
+    </div>
+    <script src="upload.js"></script>
+</body>

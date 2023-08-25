@@ -1,0 +1,104 @@
+body {
+    font-family: courier;
+    font-size: 20px;
+    margin: 0px;
+    padding: 0px;
+    background-color: rgb(245, 245, 245);
+}
+
+#navbar {
+    margin-top: 0.5%;
+    margin-right: 2.5%;
+    margin-left: 2.5%;
+    padding: 14px 16px;
+    text-align: center;
+    overflow: hidden;
+    background-color: rgb(49, 49, 49);
+}
+#navtitle {
+    font-weight: bold;
+    color: rgb(241, 104, 104);
+}
+
+#header {
+    background-color: rgb(55, 92, 170);
+    height: 50px;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+}
+
+#filebox {
+    border: 10px solid rgba(0, 0, 0, 0.801);
+    border-radius: 10px;
+    border-style: dashed;
+    border-width: 10px;
+    height: 400px;
+    width: 400px;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -200px;
+    position: absolute;
+    top: 50%;
+}
+#filebox.highlight {
+    border-color: lightblue;
+}
+#fileElem {
+    display: none;
+  }
+/*draw a large plus in the center of the body*/
+#fileplus {
+    background-color: rgba(0, 0, 0, 0.801);
+    border-radius: 10px;
+    height: 150px;
+    width: 150px;
+    left: 50%;
+    margin-left: -75px;
+    margin-top: -75px;
+    position: absolute;
+    top: 50%;
+}
+#fileplus::before {
+    content: "+";
+    height:200px;
+    width:200px;
+    font-size:200px;
+    margin-left: -25px;
+    margin-top: -20px;
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-family:courier;
+    color:rgb(255, 255, 255);
+}
+#fileplus.highlight {
+    background-color: lightblue;
+}
+
+#progress-bar.hidden {
+    visibility: hidden;
+}
+
+#filebox.hidden {
+    visibility: hidden;
+}
+#fileplus.hidden {
+    visibility: hidden;
+}
+#output.hidden {
+    visibility: hidden;
+}
+#outputbox {
+    margin-left: 5%;
+}
+#progress-bar {
+    left: 50%;
+    margin-left: -25%;
+    position: absolute;
+    top: 90%;
+}
