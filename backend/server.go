@@ -190,6 +190,8 @@ func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 	// operation if on linux or other unix-like OS (windows hosts should look into https://github.com/natefinch/atomic
 	// package for atomic file write operations)
 	tempFile.Close()
+	logger.Info(targetPath)
+	targetPath = tempFile.Name() + ".dmp"
 	if err := os.Rename(tempFile.Name(), targetPath); err != nil {
 		os.Remove(tempFile.Name())
 		logger.WithError(err).WithField("path", targetPath).Error("failed to rename temp file to final filename for upload")
