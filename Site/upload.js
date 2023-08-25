@@ -88,7 +88,7 @@ function uploadFile(file, i) {
       outputbox.innerText = xhr.responseText
     }
     else if (xhr.readyState == 4 && xhr.status != 200) {
-      // Error. Inform the user
+      alert('Error uploading file please check console!')
     }
   })
 

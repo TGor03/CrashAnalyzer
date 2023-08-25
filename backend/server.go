@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/sha1"
 	"errors"
 	"fmt"
 	"io"
@@ -10,7 +9,6 @@ import (
 	"os"
 	"path"
 	"regexp"
-	"strings"
 
 	"github.com/sirupsen/logrus"
 )
@@ -42,93 +40,6 @@ func NewServer(documentRoot string, maxUploadSize int64, token string, enableCOR
 		EnableCORS:       enableCORS,
 		ProtectedMethods: protectedMethods,
 	}
-}
-
-func (s Server) handleGet(w http.ResponseWriter, r *http.Request) {
-	if !rePathFiles.MatchString(r.URL.Path) {
-		w.WriteHeader(http.StatusNotFound)
-		writeError(w, fmt.Errorf("\"%s\" is not found", r.URL.Path))
-		return
-	}
-	if s.EnableCORS {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-	}
-	http.StripPrefix("/files/", http.FileServer(http.Dir(s.DocumentRoot))).ServeHTTP(w, r)
-}
-
-func (s Server) handlePost(w http.ResponseWriter, r *http.Request) {
-	srcFile, info, err := r.FormFile("file")
-	if err != nil {
-		logger.WithError(err).Error("failed to acquire the uploaded content")
-		w.WriteHeader(http.StatusInternalServerError)
-		writeError(w, err)
-		return
-	}
-	defer srcFile.Close()
-	logger.Debug(info)
-	size, err := getSize(srcFile)
-	if err != nil {
-		logger.WithError(err).Error("failed to get the size of the uploaded content")
-		w.WriteHeader(http.StatusInternalServerError)
-		writeError(w, err)
-		return
-	}
-	if size > s.MaxUploadSize {
-		logger.WithField("size", size).Info("file size exceeded")
-		w.WriteHeader(http.StatusRequestEntityTooLarge)
-		writeError(w, errors.New("uploaded file size exceeds the limit"))
-		return
-	}
-
-	body, err := ioutil.ReadAll(srcFile)
-	if err != nil {
-		logger.WithError(err).Error("failed to read the uploaded content")
-		w.WriteHeader(http.StatusInternalServerError)
-		writeError(w, err)
-		return
-	}
-	filename := info.Filename
-	if filename == "" {
-		filename = fmt.Sprintf("%x", sha1.Sum(body))
-	}
-
-	dstPath := path.Join(s.DocumentRoot, filename)
-	dstFile, err := os.OpenFile(dstPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-	if err != nil {
-		logger.WithError(err).WithField("path", dstPath).Error("failed to open the file")
-		w.WriteHeader(http.StatusInternalServerError)
-		writeError(w, err)
-		return
-	}
-	defer dstFile.Close()
-	if written, err := dstFile.Write(body); err != nil {
-		logger.WithError(err).WithField("path", dstPath).Error("failed to write the content")
-		w.WriteHeader(http.StatusInternalServerError)
-		writeError(w, err)
-		return
-	} else if int64(written) != size {
-		logger.WithFields(logrus.Fields{
-			"size":    size,
-			"written": written,
-		}).Error("uploaded file size and written size differ")
-		w.WriteHeader(http.StatusInternalServerError)
-		writeError(w, fmt.Errorf("the size of uploaded content is %d, but %d bytes written", size, written))
-	}
-	uploadedURL := strings.TrimPrefix(dstPath, s.DocumentRoot)
-	if !strings.HasPrefix(uploadedURL, "/") {
-		uploadedURL = "/" + uploadedURL
-	}
-	uploadedURL = "/files" + uploadedURL
-	logger.WithFields(logrus.Fields{
-		"path": dstPath,
-		"url":  uploadedURL,
-		"size": size,
-	}).Info("file uploaded by POST")
-	if s.EnableCORS {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-	}
-	w.WriteHeader(http.StatusOK)
-	writeSuccess(w, uploadedURL)
 }
 
 func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
@@ -250,10 +161,6 @@ func (s Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch r.Method {
-	case http.MethodGet, http.MethodHead:
-		s.handleGet(w, r)
-	case http.MethodPost:
-		s.handlePost(w, r)
 	case http.MethodPut:
 		s.handlePut(w, r)
 	case http.MethodOptions:
