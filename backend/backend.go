@@ -15,17 +15,16 @@ import (
 var logger *logrus.Logger
 
 func run(args []string) int {
-	bindAddress := flag.String("ip", "0.0.0.0", "IP address to bind")
-	listenPort := flag.Int("port", 25478, "port number to listen on")
-	tlsListenPort := flag.Int("tlsport", 25443, "port number to listen on with TLS")
-	// Each 5,242,880 bytes == 5 MiB
-	maxUploadSize := flag.Int64("upload_limit", 5242880*3, "max size of uploaded file (byte)") // Default max of 15 mb
-	tokenFlag := flag.String("token", "f9403fc5f537b4ab332d", "specify the security token")
+	bindAddress := flag.String("ip", "0.0.0.0", "IP address to bind")                                                          //Default to localhost
+	listenPort := flag.Int("port", 25478, "port number to listen on")                                                          //Default to 25478
+	tlsListenPort := flag.Int("tlsport", 25443, "port number to listen on with TLS")                                           //Default to 25443
+	maxUploadSize := flag.Int64("upload_limit", 5242880*3, "max size of uploaded file (byte)")                                 // Default max of 15 mb
+	tokenFlag := flag.String("token", "f9403fc5f537b4ab332d", "specify the security token")                                    //Default to a random token
 	protectedMethodFlag := flag.String("protected_method", "", "specify methods intended to be protect by the security token") //Default to none
-	logLevelFlag := flag.String("loglevel", "info", "logging level")
-	certFile := flag.String("cert", "", "path to certificate file")
-	keyFile := flag.String("key", "", "path to key file")
-	corsEnabled := flag.Bool("cors", true, "if true, add ACAO header to support CORS") //Default to add CORS header
+	logLevelFlag := flag.String("loglevel", "info", "logging level")                                                           //Default to info
+	certFile := flag.String("cert", "", "path to certificate file")                                                            //Default to no TLS
+	keyFile := flag.String("key", "", "path to key file")                                                                      //Default to no TLS
+	corsEnabled := flag.Bool("cors", true, "if true, add ACAO header to support CORS")                                         //Default to add CORS header
 	serverRoot := flag.String("", "./dumps", "Where to save the dumps")
 
 	if logLevel, err := logrus.ParseLevel(*logLevelFlag); err != nil {

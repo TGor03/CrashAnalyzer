@@ -40,6 +40,7 @@ func NewServer(documentRoot string, maxUploadSize int64, token string, enableCOR
 	}
 }
 
+// Handle PUT requests
 func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 	if s.EnableCORS {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -100,8 +101,6 @@ func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// excplicitly close file to flush, then rename from temp name to actual name in atomic file
-	// operation if on linux or other unix-like OS (windows hosts should look into https://github.com/natefinch/atomic
-	// package for atomic file write operations)
 	tempFile.Close()
 	logger.Info(targetPath)
 	targetPath = tempFile.Name() + ".dmp"
