@@ -18,14 +18,14 @@ func run(args []string) int {
 	bindAddress := flag.String("ip", "0.0.0.0", "IP address to bind")
 	listenPort := flag.Int("port", 25478, "port number to listen on")
 	tlsListenPort := flag.Int("tlsport", 25443, "port number to listen on with TLS")
-	// 5,242,880 bytes == 5 MiB
-	maxUploadSize := flag.Int64("upload_limit", 5242880*20, "max size of uploaded file (byte)")
-	tokenFlag := flag.String("token", "f9403fc5f537b4ab332d", "specify the security token (it is automatically generated if empty)")
-	protectedMethodFlag := flag.String("protected_method", "", "specify methods intended to be protect by the security token")
+	// Each 5,242,880 bytes == 5 MiB
+	maxUploadSize := flag.Int64("upload_limit", 5242880*3, "max size of uploaded file (byte)") // Default max of 15 mb
+	tokenFlag := flag.String("token", "f9403fc5f537b4ab332d", "specify the security token")
+	protectedMethodFlag := flag.String("protected_method", "", "specify methods intended to be protect by the security token") //Default to none
 	logLevelFlag := flag.String("loglevel", "info", "logging level")
 	certFile := flag.String("cert", "", "path to certificate file")
 	keyFile := flag.String("key", "", "path to key file")
-	corsEnabled := flag.Bool("cors", true, "if true, add ACAO header to support CORS")
+	corsEnabled := flag.Bool("cors", true, "if true, add ACAO header to support CORS") //Default to add CORS header
 	serverRoot := flag.String("", "./dumps", "Where to save the dumps")
 
 	if logLevel, err := logrus.ParseLevel(*logLevelFlag); err != nil {
@@ -60,7 +60,6 @@ func run(args []string) int {
 	}
 	tlsEnabled := *certFile != "" && *keyFile != ""
 	server := NewServer(*serverRoot, *maxUploadSize, token, *corsEnabled, protectedMethods)
-	http.Handle("/upload", server)
 	http.Handle("/files/", server)
 
 	errors := make(chan error)
@@ -103,7 +102,7 @@ func run(args []string) int {
 
 func main() {
 	logger = logrus.New()
-	logger.Info("starting up simple-upload-server")
+	logger.Info("starting up analyzer server")
 
 	result := run(os.Args)
 	os.Exit(result)

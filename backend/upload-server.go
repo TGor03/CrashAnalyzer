@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -14,14 +13,13 @@ import (
 )
 
 var (
-	rePathUpload = regexp.MustCompile(`^/upload$`)
-	rePathFiles  = regexp.MustCompile(`^/files/([^/]+)$`)
+	rePathFiles = regexp.MustCompile(`^/files/([^/]+)$`)
 
 	errTokenMismatch = errors.New("token mismatched")
 	errMissingToken  = errors.New("missing token")
 )
 
-// Server represents a simple-upload server.
+// Server represents our upload server.
 type Server struct {
 	DocumentRoot string
 	// MaxUploadSize limits the size of the uploaded content, specified with "byte".
@@ -31,7 +29,7 @@ type Server struct {
 	ProtectedMethods []string
 }
 
-// NewServer creates a new simple-upload server.
+// NewServer creates a new upload server.
 func NewServer(documentRoot string, maxUploadSize int64, token string, enableCORS bool, protectedMethods []string) Server {
 	return Server{
 		DocumentRoot:     documentRoot,
@@ -43,6 +41,10 @@ func NewServer(documentRoot string, maxUploadSize int64, token string, enableCOR
 }
 
 func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
+	if s.EnableCORS {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+	}
+
 	matches := rePathFiles.FindStringSubmatch(r.URL.Path)
 	if matches == nil {
 		logger.WithField("path", r.URL.Path).Info("invalid path")
@@ -54,7 +56,7 @@ func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 
 	// We have to create a new temporary file in the same device to avoid "invalid cross-device link" on renaming.
 	// Here is the easiest solution: create it in the same directory.
-	tempFile, err := ioutil.TempFile(s.DocumentRoot, "upload_")
+	tempFile, err := os.CreateTemp(s.DocumentRoot, "upload_")
 	if err != nil {
 		logger.WithError(err).Error("failed to create a temporary file")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -115,9 +117,6 @@ func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 		"path": r.URL.Path,
 		"size": n,
 	}).Info("file uploaded by PUT")
-	if s.EnableCORS {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-	}
 	w.Write([]byte(analyzedump(targetPath)))
 }
 
