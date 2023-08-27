@@ -8,7 +8,6 @@ import (
 )
 
 func analyzedump(targetPath string) string {
-	//CDB must be installed in the !WINDOWS! system and added to the environment variable
 	app := "cdb"
 	arg0 := "-z"
 	arg1 := targetPath
