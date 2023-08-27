@@ -1,5 +1,5 @@
-CDB must be installed on a windows system and added to the environment variable
-Uses goreleaser for automatic release
+** CDB must be installed on a windows system and added to the environment variable **
+
 # TODO
 - Make backend host frontend
 - Add linux support for crash analysis server
