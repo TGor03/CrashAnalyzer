@@ -34,6 +34,9 @@ jobs:
   release-windows:
     name: Release Windows
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
     steps:
     - uses: actions/checkout@v3
     - uses: wangyoucao577/go-release-action@v1
