@@ -33,7 +33,7 @@ jobs:
       working-directory: backend
   release-windows:
     name: Release Windows
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: wangyoucao577/go-release-action@v1
