@@ -99,6 +99,7 @@ func run(args []string) int {
 	return 0
 }
 
+// EntryPoint
 func main() {
 	logger = logrus.New()
 	logger.Info("starting up analyzer server")
