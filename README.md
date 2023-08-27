@@ -1,4 +1,4 @@
-** CDB must be installed on a windows system and added to the environment variable **
+**CDB must be installed on a windows system and added to the environment variable**
 
 # TODO
 - Make backend host frontend
