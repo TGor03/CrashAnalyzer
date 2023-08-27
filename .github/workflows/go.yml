@@ -1,25 +1,30 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+name: Release Go Binaries
 
 on:
-  push:
-    tags:
-      - "release/*"
+  release:
+    types: [created]
+
 jobs:
   releases-matrix:
-    name: Release test binary
+    name: Release Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        goos: [ windows ]
-        goarch: [ amd64]
+        # build and publish in parallel: linux/amd64
+        goos: [windows]
+        goarch: [amd64]
     steps:
-      - uses: actions/checkout@v3
-      - uses: wangyoucao577/go-zero-release-action@master
+      - uses: actions/checkout@v2
+      - name: Run tests
+        working-directory: ./backend
+        run: go test -v -p=1 -timeout=0 ./...
+        
+      - uses: wangyoucao577/go-release-action@v1.16
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          goversion: "1.21"
           project_path: "backend"
-          binary_name: "backend"
+          binary_name: "server"
+          ldflags: "-s -w"
+          extra_files: README.md
