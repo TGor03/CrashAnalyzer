@@ -101,6 +101,8 @@ func main() {
 	if _, err := os.Stat("./dumps"); os.IsNotExist(err) {
 		os.Mkdir("./dumps", 0777)
 	}
+	//Clear out any old files in dump folder
+	os.RemoveAll("./dumps/*")
 
 	result := run(os.Args)
 	os.Exit(result)

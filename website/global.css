@@ -35,9 +35,29 @@ body {
     font-weight: bold;
     color: rgb(241, 104, 104);
 }
-
-#spinner {
+#loading {
     visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -65px;
+    margin-top: -65px;
+}
+#loadingtext{
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    margin-left: -50px;
+    margin-top: -130px;
+}
+#loading.shown {
+    visibility: visible;
+}
+#spinner {
     border: 16px solid #f3f3f3;
     border-top: 16px solid rgb(241, 104, 104);
     border-radius: 50%;
@@ -49,15 +69,12 @@ body {
     left: 50%;
     margin-left: -65px;
     margin-top: -65px;
-  }
-  #spinner.shown {
-    visibility: visible;
-  }
+}
   
-  @keyframes spin {
+@keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
+}
 
 #header {
     background-color: rgb(55, 92, 170);
@@ -117,6 +134,9 @@ body {
 }
 #fileplus.highlight {
     background-color: lightblue;
+}
+#loadingtext {
+    color: rgb(0, 0, 0);
 }
 
 #filebox.hidden {
