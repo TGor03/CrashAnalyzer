@@ -7,30 +7,30 @@ import (
 	"strings"
 )
 
-func hasmz(targetPath string) bool {
+func is_valid_dmp(targetPath string) bool {
 	// Open the file
 	file, err := os.Open(targetPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
-	defer file.Close()
+	defer file.Close() //Close the file when we're done
 
-	// Read the first two bytes of the file
-	var header [2]byte
+	// Read the first six bytes of the file
+	var header [6]byte
 	_, err = file.Read(header[:])
 	if err != nil {
 		fmt.Println(err.Error())
 		return false
 	}
 
-	// Check if the first two bytes are equal to "MZ"
-	// MZ is the magic header for PE, DLL, and DOS files
-	if string(header[:]) != "MZ" {
-		return false
+	// Check if the first six bytes are equal to "PAGEDU"
+	// MZ is the magic header for windows crashdump files
+	if string(header[:]) == "PAGEDU" {
+		return true
 	}
 
-	return true
+	return false
 }
 
 func analyzedump(targetPath string) string {
@@ -42,8 +42,8 @@ func analyzedump(targetPath string) string {
 	}
 
 	//Check if the file is a PE file to prevent exploitation
-	if hasmz(targetPath) {
-		return "Error while analyzing file (File is a PE file)"
+	if !is_valid_dmp(targetPath) {
+		return "Error while analyzing file (File is not a valid crashdump file)"
 	}
 
 	app := "cdb"

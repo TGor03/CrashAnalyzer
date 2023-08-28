@@ -103,6 +103,10 @@ func run(args []string) int {
 func main() {
 	logger = logrus.New()
 	logger.Info("starting up analyzer server")
+	//Make sure we have our dump folder
+	if _, err := os.Stat("./dumps"); os.IsNotExist(err) {
+		os.Mkdir("./dumps", 0777)
+	}
 
 	result := run(os.Args)
 	os.Exit(result)
