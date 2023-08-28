@@ -16,7 +16,10 @@
         <form class="my-form">
             <input type="file" id="fileElem" multiple accept=".dmp" onchange="handleFiles(this.files)">
         </form>
-        <progress id="progress-bar" max=100 value=0></progress>
+    </div>
+    <!--Generate our loading spinner-->
+    <div id="loading">
+        <div id="spinner"></div>
     </div>
     <!--Generate our output box-->
     <div id="outputbox">

@@ -1,3 +1,5 @@
+let serverURL = "localhost:25478" // <- Change this to your server URL or IP format is (IP:PORT)
+
 // ************************ Drag and drop ***************** //
 let dropArea = document.getElementById("filebox")
 let fileplus = document.getElementById("fileplus")
@@ -42,34 +44,19 @@ function handleDrop(e) {
   handleFiles(files)
 }
 
-let uploadProgress = []
-let progressBar = document.getElementById('progress-bar')
 let closebutton = document.getElementById('closebutton')
 let outputbox = document.getElementById('output')
+let spinner = document.getElementById('spinner')
 
-function initializeProgress(numFiles) {
-  progressBar.value = 0
-  uploadProgress = []
-
-  for(let i = numFiles; i > 0; i--) {
-    uploadProgress.push(0)
-  }
-}
-
-function updateProgress(fileNumber, percent) {
-  uploadProgress[fileNumber] = percent
-  let total = uploadProgress.reduce((tot, curr) => tot + curr, 0) / uploadProgress.length
-  progressBar.value = total
-}
 
 function handleFiles(files) {
   files = [...files]
-  initializeProgress(files.length)
   files.forEach(uploadFile)
 }
 
+// Point at which the file is uploaded
 function uploadFile(file, i) {
-  var url = 'http://localhost:25478/files/dump.dmp'
+  var url = 'http://' + serverURL + '/files/dump.dmp'
   var xhr = new XMLHttpRequest()
   var formData = new FormData()
   xhr.open('PUT', url, true)
@@ -77,16 +64,17 @@ function uploadFile(file, i) {
 
   // Update progress (can be used to show progress indicator)
   xhr.upload.addEventListener("progress", function(e) {
-    updateProgress(i, (e.loaded * 100.0 / e.total) || 100)
+    dropArea.classList.add('hidden')
+    fileplus.classList.add('hidden')
+    spinner.classList.add('shown')
+    closebutton.classList.add('shown')
   })
 
   xhr.addEventListener('readystatechange', function(e) {
     if (xhr.readyState == 4 && xhr.status == 200) {
-      updateProgress(i, 100) // <- Add this
       dropArea.classList.add('hidden')
       fileplus.classList.add('hidden')
-      progressBar.classList.add('hidden')
-      closebutton.classList.add('shown')
+      spinner.classList.remove('shown')
       outputbox.innerText = xhr.responseText
     }
     else if (xhr.readyState == 4 && xhr.status != 200) {
@@ -99,7 +87,8 @@ function uploadFile(file, i) {
   xhr.getAllResponseHeaders
 }
 
-//Close button handler
+// Close button
 function closeDump() {
+  //Just reload the page
   location.reload();
 }

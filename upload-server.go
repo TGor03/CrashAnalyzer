@@ -119,8 +119,12 @@ func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s Server) handleOptions(w http.ResponseWriter, r *http.Request) {
+	if !s.EnableCORS {
+		w.WriteHeader(http.StatusNoContent)
+		return
+	}
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
 	w.WriteHeader(http.StatusNoContent)
 }
