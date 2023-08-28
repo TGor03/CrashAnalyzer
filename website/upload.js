@@ -46,7 +46,7 @@ function handleDrop(e) {
 
 let closebutton = document.getElementById('closebutton')
 let outputbox = document.getElementById('output')
-let spinner = document.getElementById('spinner')
+let spinner = document.getElementById('loading')
 
 
 function handleFiles(files) {
