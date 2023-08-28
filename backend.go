@@ -59,7 +59,7 @@ func run(args []string) int {
 	}
 	tlsEnabled := *certFile != "" && *keyFile != ""
 	server := NewServer(*serverRoot, *maxUploadSize, token, *corsEnabled, protectedMethods)
-	http.Handle("/files/", server)
+	http.Handle("/files/", server) //This is going to call with a goroutine so we can handle multiple requests at once
 
 	errors := make(chan error)
 
