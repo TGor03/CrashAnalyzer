@@ -44,6 +44,7 @@ function handleDrop(e) {
 
 let uploadProgress = []
 let progressBar = document.getElementById('progress-bar')
+let closebutton = document.getElementById('closebutton')
 let outputbox = document.getElementById('output')
 
 function initializeProgress(numFiles) {
@@ -85,6 +86,7 @@ function uploadFile(file, i) {
       dropArea.classList.add('hidden')
       fileplus.classList.add('hidden')
       progressBar.classList.add('hidden')
+      closebutton.classList.add('shown')
       outputbox.innerText = xhr.responseText
     }
     else if (xhr.readyState == 4 && xhr.status != 200) {
@@ -95,4 +97,9 @@ function uploadFile(file, i) {
   formData.append('file', file)
   xhr.send(formData)
   xhr.getAllResponseHeaders
+}
+
+//Close button handler
+function closeDump() {
+  location.reload();
 }

@@ -102,7 +102,6 @@ func (s Server) handlePut(w http.ResponseWriter, r *http.Request) {
 	}
 	// excplicitly close file to flush, then rename from temp name to actual name in atomic file
 	tempFile.Close()
-	logger.Info(targetPath)
 	targetPath = tempFile.Name() + ".dmp"
 	if err := os.Rename(tempFile.Name(), targetPath); err != nil {
 		os.Remove(tempFile.Name())

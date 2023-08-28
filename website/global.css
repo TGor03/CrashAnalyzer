@@ -5,7 +5,23 @@ body {
     padding: 0px;
     background-color: rgb(245, 245, 245);
 }
+#closebutton {
+    visibility: hidden; /*hide the close button until the user has selected a file*/
+    color: white;
+    /*position the close button in the top right corner of the filebox*/
+    position: absolute;
+    top: 0.75%;
+    right: 2.5%;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgb(241, 104, 104);
+    cursor: pointer;
+}
+#closebutton.shown {
+    visibility: visible;
 
+}
 #navbar {
     margin-top: 0.5%;
     margin-right: 2.5%;

@@ -25,7 +25,7 @@ func is_valid_dmp(targetPath string) bool {
 	}
 
 	// Check if the first six bytes are equal to "PAGEDU"
-	// MZ is the magic header for windows crashdump files
+	// PAGEDU is the magic header for windows crashdump files
 	if string(header[:]) == "PAGEDU" {
 		return true
 	}
@@ -37,7 +37,7 @@ func analyzedump(targetPath string) string {
 
 	// Check if the file exists
 	if _, err := os.Stat(targetPath); err != nil {
-		fmt.Println(err.Error())
+		logger.Error("Error while analyzing file (File does not exist)")
 		return "Error while analyzing file"
 	}
 
@@ -55,7 +55,7 @@ func analyzedump(targetPath string) string {
 	cmd := exec.Command(app, arg0, arg1, arg2, arg3)
 	stdout, err := cmd.Output()
 	if err != nil {
-		fmt.Println(err.Error())
+		logger.Error("Error while launching debugger agent ", err.Error(), " (Is this a valid dump file?)")
 		return "Error while launching debugger agent (Is this a valid dump file?)"
 	}
 
@@ -63,7 +63,10 @@ func analyzedump(targetPath string) string {
 	rightpoint := strings.LastIndex(string(stdout), "quit:")
 
 	// Delete the dump file after analysis
-	os.Remove(targetPath)
+	err = os.Remove(targetPath)
+	if err != nil {
+		logger.Error("Error while deleting dump file ", err.Error(), " (Is the file in use?)")
+	}
 
 	// Return the output of the bug check analysis
 	return string(stdout[leftpoint:rightpoint])
